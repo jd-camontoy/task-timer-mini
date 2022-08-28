@@ -1,11 +1,15 @@
-let timerDurationInMinutes = 1;
-let displayedTimerTextStart = "01:00";
+let timerDurationInMinutes = 25;
 let displayedTimerElement = document.getElementById("app-timer");
 let buttonGroupDiv = document.getElementById('app-controls');
 let startButton = document.getElementById('start-timer');
 
+function createTimerTextStart(timerDuration) {
+  let displayedMinute = (timerDuration < 10) ? '0' + timerDuration : timerDuration;
+  return displayedMinute + ':00';
+}
+
 function addMinutes(date, minutes) {
-    return new Date(date.getTime() + minutes*60000);
+  return new Date(date.getTime() + minutes*60000);
 }
 
 function createNewStartButton(buttonSpecs) {
@@ -52,7 +56,7 @@ const startTimer = () => {
     
       if (currentDistance < 0) {
         clearInterval(interval);
-        displayedTimerElement.innerHTML = displayedTimerTextStart;
+        displayedTimerElement.innerHTML = createTimerTextStart(timerDurationInMinutes);
         
         startButton = createNewStartButton(startButtonSpecs);
         buttonGroupDiv.appendChild(startButton);
@@ -61,6 +65,11 @@ const startTimer = () => {
     }, 1000);
 }
 
-if (startButton) {
-  addEventListenerToStartButton();
+const initialize = () => {
+  if (startButton) {
+    addEventListenerToStartButton();
+  }
+  displayedTimerElement.innerHTML = createTimerTextStart(timerDurationInMinutes);
 }
+
+initialize();
