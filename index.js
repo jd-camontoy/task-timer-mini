@@ -1,14 +1,37 @@
 let timerDurationInMinutes = 1;
 let displayedTimerTextStart = "01:00";
 let displayedTimerElement = document.getElementById("app-timer");
+let buttonGroupDiv = document.getElementById('app-controls');
 let startButton = document.getElementById('start-timer');
 
 function addMinutes(date, minutes) {
     return new Date(date.getTime() + minutes*60000);
 }
 
+function createNewStartButton(buttonSpecs) {
+  let newStartButton = document.createElement('button');
+  newStartButton.setAttribute('id', buttonSpecs.id);
+  newStartButton.setAttribute('class', buttonSpecs.class);
+  newStartButton.innerHTML = buttonSpecs.text;
+  return newStartButton;
+}
+
+function getStartBtnSpecs(buttonElement) {
+  return {
+    'id': buttonElement.getAttribute('id'),
+    'class': buttonElement.getAttribute('class'),
+    'text': buttonElement.innerHTML
+  };
+}
+
+function addEventListenerToStartButton() {
+  startButton.addEventListener('click', startTimer);
+}
+
 const startTimer = () => {
-  startButton.style.display = 'none';
+  let startButtonSpecs = getStartBtnSpecs(startButton);
+  startButton.remove();
+
   console.log('Timer started');
   let currentDate = new Date();
   let dateAdded25Mins = addMinutes(currentDate, timerDurationInMinutes);
@@ -30,11 +53,14 @@ const startTimer = () => {
       if (currentDistance < 0) {
         clearInterval(interval);
         displayedTimerElement.innerHTML = displayedTimerTextStart;
-        startButton.style.display = 'flex';
+        
+        startButton = createNewStartButton(startButtonSpecs);
+        buttonGroupDiv.appendChild(startButton);
+        addEventListenerToStartButton();
       }
     }, 1000);
 }
 
 if (startButton) {
-    startButton.addEventListener('click', startTimer);
+  addEventListenerToStartButton();
 }
