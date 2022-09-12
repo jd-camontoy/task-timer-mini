@@ -1,7 +1,8 @@
-let timerDurationInMinutes = 25;
+let timerDurationInMinutes = 1;
 let displayedTimerElement = document.getElementById("app-timer");
 let buttonGroupDiv = document.getElementById('app-controls');
 let startButton = document.getElementById('start-timer');
+let permission;
 
 function createTimerTextStart(timerDuration) {
   let displayedMinute = (timerDuration < 10) ? '0' + timerDuration : timerDuration;
@@ -32,6 +33,15 @@ function addEventListenerToStartButton() {
   startButton.addEventListener('click', startTimer);
 }
 
+async function askNotificationPermission() {
+  if (Notification.permission === 'default') {
+    permission = await Notification.requestPermission();
+  } else {
+    permission = Notification.permission;
+  }
+  console.log(`Notification permission: ${permission}`);
+}
+
 const startTimer = () => {
   let startButtonSpecs = getStartBtnSpecs(startButton);
   startButton.remove();
@@ -49,14 +59,20 @@ const startTimer = () => {
       let minutes = Math.floor((currentDistance % (1000 * 60 * 60)) / (1000 * 60));
       let seconds = Math.floor((currentDistance % (1000 * 60)) / 1000);
 
-      let displayedMinutes = (minutes < 10) ? '0' + minutes : minutes;
-      let displayedSeconds = (seconds < 10) ? '0' + seconds : seconds;
+      let displayedMinutes = `${(minutes < 10) ? '0' : ''}${minutes}`;
+      let displayedSeconds = `${(seconds < 10) ? '0' : ''}${seconds}`;
     
       displayedTimerElement.innerHTML = displayedMinutes + ":" + displayedSeconds;
     
       if (currentDistance < 0) {
         clearInterval(interval);
         displayedTimerElement.innerHTML = createTimerTextStart(timerDurationInMinutes);
+
+        if (permission === 'granted') {
+          new Notification('That was productive.', {
+            body: `${timerDurationInMinutes} minute${(timerDurationInMinutes > 1) ? 's' : ''} of work time has ended. You deserve a break.`
+          });
+        }
         
         startButton = createNewStartButton(startButtonSpecs);
         buttonGroupDiv.appendChild(startButton);
@@ -70,6 +86,7 @@ const initialize = () => {
     addEventListenerToStartButton();
   }
   displayedTimerElement.innerHTML = createTimerTextStart(timerDurationInMinutes);
+  askNotificationPermission();
 }
 
 initialize();
