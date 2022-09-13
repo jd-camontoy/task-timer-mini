@@ -19,31 +19,40 @@ body, button, input {
 }
 
 .container {
-    max-width: 80%;
-    margin: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 100%;
 }
 
 .app {
+    text-align: center;
     display: flex;
     flex-direction: column;
-    text-align: center;
-
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    justify-self: center;
+    align-self: center;
 }
 
 .app #app-timer {
-    font-size: 16rem;
+    font-size: 14rem;
     font-weight: 400;
-    margin-bottom: 6rem;
+    color: #96BDC6;
+}
+
+.app-controls {
+    padding: 2rem 0;
+}
+
+.app-controls .btn--primary {
+    margin: 2rem 0;
 }
 
 .btn--primary {
-    font-size: 2.4rem;
-    padding: 3rem 4rem;
+    border: none;
+    font-size: 2rem;
+    padding: 2rem 3rem;
     border-radius: 5rem;
     font-weight: 700;
     cursor: pointer;
+    background-color: #E8CCBF;
+    color: #8C7B73;
 }
